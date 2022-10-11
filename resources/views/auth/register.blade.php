@@ -17,8 +17,8 @@
 
     <!-- Email Address -->
     <div class="mt-3">
-      <x-label for="email" :value="__('Email')" />
-      <x-input type="email" name="email" id="email" value="{{ old('email') }}" required />
+      <x-label for="username" :value="__('Username')" />
+      <x-input type="text" name="username" id="username" value="{{ old('username') }}" required />
     </div>
 
     <!-- Password -->
