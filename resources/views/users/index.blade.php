@@ -32,6 +32,10 @@
             class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
             Username
           </th>
+          <th
+            class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
+            Role
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +46,25 @@
             </td>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
               <p class="text-gray-900 whitespace-no-wrap">{{ $user->username }}</p>
+            </td>
+            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+              @switch($user->role)
+                @case('ADMIN')
+                  <x-badge color="red">{{ $user->role }}</x-badge>
+                @break
+
+                @case('KURIKULUM')
+                  <x-badge color="indigo">{{ $user->role }}</x-badge>
+                @break
+
+                @case('KARYAWAN')
+                  <x-badge color="green">{{ $user->role }}</x-badge>
+                @break
+
+                @default
+                  <x-badge color="blue">{{ $user->role }}</x-badge>
+                @break
+              @endswitch
             </td>
           </tr>
         @endforeach
