@@ -20,8 +20,10 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::middleware('admin')->group(function () {
+        Route::resource('users', UserController::class);
+    });
 });
