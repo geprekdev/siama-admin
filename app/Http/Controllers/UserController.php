@@ -50,4 +50,37 @@ class UserController extends Controller
                 Password: $password"
             );
     }
+
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $credentials = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
+            'role' => ['required', 'string', Rule::in(['KURIKULUM', 'KARYAWAN'])],
+        ]);
+
+        $user->update($credentials);
+
+        return redirect()->route('users.index')
+            ->with(
+                'success',
+                'Berhasil mengedit user!'
+            );
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->route('users.index')
+            ->with(
+                'success',
+                'Berhasil menghapus user!'
+            );
+    }
 }

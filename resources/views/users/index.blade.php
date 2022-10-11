@@ -90,7 +90,7 @@
                 </svg>
               </a>
               <form onsubmit="return window.confirm('Apakah anda yakin?')"
-                action="{{ route('users.destroy', ['user' => $user->id]) }}">
+                action="{{ route('users.destroy', ['user' => $user->id]) }}" method="POST">
                 @csrf
                 @method('DELETE')
 
