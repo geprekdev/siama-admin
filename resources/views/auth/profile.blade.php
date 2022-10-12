@@ -31,7 +31,7 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
           <div>
             <x-label for="name" :value="__('Name')" />
             <x-input type="text" name="name" id="name" value="{{ old('name', auth()->user()->name) }}"
@@ -42,6 +42,12 @@
             <x-label for="username" :value="__('Username')" />
             <x-input type="username" name="username" id="username"
               value="{{ old('username', auth()->user()->username) }}" required />
+          </div>
+
+          <div>
+            <x-label for="role" :value="__('Role')" />
+            <x-input :disabled="true" type="role" name="role" id="role"
+              value="{{ auth()->user()->role }}" />
           </div>
 
           <div>
