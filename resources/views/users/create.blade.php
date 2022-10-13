@@ -18,7 +18,7 @@
 
           <div>
             <x-label for="username" :value="__('Username')" />
-            <x-input type="username" name="username" id="username" value="{{ old('username') }}" required />
+            <x-input type="text" name="username" id="username" value="{{ old('username') }}" required />
           </div>
 
           <div>
