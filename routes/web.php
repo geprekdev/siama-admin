@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Attendance\TimetableController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -25,5 +26,10 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->except('show');
+    });
+
+    Route::middleware('kurikulum')->group(function () {
+        Route::resource('attendances/timetables', TimetableController::class)
+            ->names('attendances.timetables');
     });
 });
