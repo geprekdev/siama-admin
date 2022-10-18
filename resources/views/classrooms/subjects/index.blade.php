@@ -100,7 +100,7 @@
     </table>
 
     <div class="flex flex-col xs:flex-row justify-between px-5 py-5 bg-white border-t">
-      {{ $subjects->links() }}
+      {{ $subjects->appends(['search' => request()->input('search')])->links() }}
     </div>
   </div>
 </x-app-layout>

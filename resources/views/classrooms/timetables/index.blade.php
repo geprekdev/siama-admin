@@ -1,6 +1,6 @@
 <x-app-layout>
   <x-slot name="header">
-    {{ __('Jadwal Masuk/Keluar') }}
+    {{ __('Jadwal Pelajaran') }}
   </x-slot>
 
   @if ($message = Session::get('success'))
@@ -23,19 +23,11 @@
   @endif
 
   <div class="flex justify-end">
-    <a href="{{ route('attendances.timetables.create') }}"
+    <a href="{{ route('classrooms.timetables.create') }}"
       class="mb-4 py-2 px-4 text-center bg-indigo-600 rounded-md text-white text-sm hover:bg-indigo-500">Tambah</a>
   </div>
 
-  <div class="mb-3 flex justify-end flex-1">
-    <form action="{{ route('attendances.timetables.index') }}" class="relative">
-      <input type="date" name="date" value="{{ request()->input('date') }}"
-        class="text-sm text-gray-700 border-0 placeholder-gray-600 bg-gray-50 rounded-md shadow focus:bg-white focus:border-gray-300 focus:outline-none form-input">
-
-      <button type="submit"
-        class="py-2 px-4 text-center bg-yellow-500 rounded-md text-white text-sm hover:bg-yellow-400">Filter</button>
-    </form>
-  </div>
+  <x-search :route="route('classrooms.timetables.index')" />
 
   <div class="inline-block overflow-hidden min-w-full rounded-lg shadow">
     <table class="min-w-full leading-normal">
@@ -43,19 +35,23 @@
         <tr>
           <th
             class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
+            Kelas
+          </th>
+          <th
+            class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
+            Mapel
+          </th>
+          <th
+            class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
             Tanggal
           </th>
           <th
             class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
-            Masuk
+            Mulai
           </th>
           <th
             class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
-            Keluar
-          </th>
-          <th
-            class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
-            Role
+            Selesai
           </th>
           <th
             class="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase bg-gray-100 border-b-2 border-gray-200">
@@ -67,40 +63,28 @@
         @foreach ($timetables as $timetable)
           <tr>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
-              <p class="text-gray-900 whitespace-no-wrap">
-                {{ Carbon\Carbon::parse($timetable->date)->locale('id')->isoFormat('dddd, LL') }}
+              <p class="text-gray-900 whitespace-no-wrap">{{ $timetable->class }}
               </p>
             </td>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
               <p class="text-gray-900 whitespace-no-wrap">
-                {{ Carbon\Carbon::parse($timetable->work_time)->format('H:i:s') }}</p>
+                {{ strtoupper($timetable->subject) }}</p>
             </td>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
               <p class="text-gray-900 whitespace-no-wrap">
-                {{ Carbon\Carbon::parse($timetable->home_time)->format('H:i:s') }}</p>
+                {{ Carbon\Carbon::parse($timetable->date)->locale('id')->isoFormat('dddd, LL') }}</p>
             </td>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
-              @switch($timetable->role)
-                @case('MRD')
-                  <x-badge color="yellow">Murid</x-badge>
-                @break
-
-                @case('GRU')
-                  <x-badge color="indigo">Guru</x-badge>
-                @break
-
-                @case('KWN')
-                  <x-badge color="green">Karyawan</x-badge>
-                @break
-
-                @default
-                  <x-badge color="gray">Undefined</x-badge>
-                @break
-              @endswitch
+              <p class="text-gray-900 whitespace-no-wrap">
+                {{ Carbon\Carbon::parse($timetable->start_time)->format('H:i') }}</p>
+            </td>
+            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+              <p class="text-gray-900 whitespace-no-wrap">
+                {{ Carbon\Carbon::parse($timetable->end_time)->format('H:i') }}</p>
             </td>
             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
               <div class="flex flex-wrap">
-                <a href="{{ route('attendances.timetables.edit', ['timetable' => $timetable->id]) }}"
+                <a href="{{ route('classrooms.timetables.edit', ['timetable' => $timetable->id]) }}"
                   class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                   aria-label="Edit">
                   <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
@@ -110,8 +94,7 @@
                   </svg>
                 </a>
                 <form onsubmit="return window.confirm('Apakah anda yakin?')"
-                  action="{{ route('attendances.timetables.destroy', ['timetable' => $timetable->id]) }}"
-                  method="POST">
+                  action="{{ route('classrooms.timetables.destroy', ['timetable' => $timetable->id]) }}" method="POST">
                   @csrf
                   @method('DELETE')
 
@@ -133,7 +116,7 @@
     </table>
 
     <div class="flex flex-col xs:flex-row justify-between px-5 py-5 bg-white border-t">
-      {{ $timetables->appends(['date' => request()->input('date')])->links() }}
+      {{ $timetables->appends(['search' => request()->input('search')])->links() }}
     </div>
   </div>
 </x-app-layout>

@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Attendance\TimetableController;
+use App\Http\Controllers\Attendance;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Classroom\SubjectController;
+use App\Http\Controllers\Classroom;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,10 +30,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:ADMIN,KURIKULUM')->group(function () {
-        Route::resource('attendances/timetables', TimetableController::class)
+        Route::resource('attendances/timetables', Attendance\TimetableController::class)
             ->names('attendances.timetables');
 
-        Route::resource('classrooms/subjects', SubjectController::class)
+        Route::resource('classrooms/subjects', Classroom\SubjectController::class)
             ->names('classrooms.subjects');
+
+        Route::resource('classrooms/timetables', Classroom\TimetableController::class)
+            ->names('classrooms.timetables');
     });
 });
