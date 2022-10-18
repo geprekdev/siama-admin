@@ -10,7 +10,7 @@
 
   <x-errors class="mb-4" :errors="$errors" />
 
-  <div class="bg-white overflow-hidden shadow-md sm:rounded-lg">
+  <div class="bg-white min-h-[70vh] overflow-hidden shadow-md sm:rounded-lg">
     <div class="px-12 py-6 border-b border-gray-200">
       <form action="{{ route('classrooms.subjects.update', ['subject' => $subject->id]) }}" method="POST">
         @csrf
