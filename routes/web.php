@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Attendance\TimetableController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Classroom\SubjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:ADMIN')->group(function () {
         Route::resource('users', UserController::class)->except('show');
+
+        Route::resource('classrooms/subjects', SubjectController::class)
+            ->names('classrooms.subjects');
     });
 
     Route::middleware('role:ADMIN,KURIKULUM')->group(function () {
