@@ -74,6 +74,10 @@
                   <x-badge color="green">{{ $user->role }}</x-badge>
                 @break
 
+                @case('BK')
+                  <x-badge color="gray">{{ $user->role }}</x-badge>
+                @break
+
                 @default
                   <x-badge color="blue">{{ $user->role }}</x-badge>
                 @break
