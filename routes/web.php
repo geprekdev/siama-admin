@@ -27,13 +27,13 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:ADMIN')->group(function () {
         Route::resource('users', UserController::class)->except('show');
-
-        Route::resource('classrooms/subjects', SubjectController::class)
-            ->names('classrooms.subjects');
     });
 
     Route::middleware('role:ADMIN,KURIKULUM')->group(function () {
         Route::resource('attendances/timetables', TimetableController::class)
             ->names('attendances.timetables');
+
+        Route::resource('classrooms/subjects', SubjectController::class)
+            ->names('classrooms.subjects');
     });
 });
