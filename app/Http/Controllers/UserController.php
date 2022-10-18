@@ -46,7 +46,7 @@ class UserController extends Controller
             ->with(
                 'success',
                 "Berhasil menambah user! <br />
-                Username: {$credentials['name']} <br />
+                Username: {$credentials['username']} <br />
                 Password: $password"
             );
     }
