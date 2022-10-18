@@ -25,7 +25,10 @@ class TimetableController extends Controller
             })
             ->select('classrooms_classroomtimetable.id', 'classrooms_classroomsubject.grade as class', 'classrooms_classroomsubject.name as subject', 'classrooms_classroomtimetable.date', 'classrooms_classroomtimetable.start_time', 'classrooms_classroomtimetable.end_time')
             ->latest('id')
+            ->dd()
             ->paginate(50);
+
+        dd($timetables);
 
         return view('classrooms.timetables.index', compact('timetables'));
     }
@@ -51,7 +54,7 @@ class TimetableController extends Controller
             'subject_id' => ['required', 'numeric'],
         ]);
 
-        DB::table('classrooms_classroomtimetable')->update($data);
+        DB::table('classrooms_classroomtimetable')->where('id', $id)->update($data);
 
         return redirect()
             ->route('classrooms.timetables.index')
