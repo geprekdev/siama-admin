@@ -62,8 +62,6 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'admin' => \App\Http\Middleware\EnsureAuthenticatedUserIsAdmin::class,
-        'kurikulum' => \App\Http\Middleware\EnsureAuthenticatedUserIsKurikulum::class,
-        'karyawan' => \App\Http\Middleware\EnsureAuthenticatedUserIsKaryawan::class,
+        'role' => \App\Http\Middleware\CheckRole::class,
     ];
 }

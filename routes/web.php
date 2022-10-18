@@ -24,11 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::middleware('admin')->group(function () {
+    Route::middleware('role:ADMIN')->group(function () {
         Route::resource('users', UserController::class)->except('show');
     });
 
-    Route::middleware('kurikulum')->group(function () {
+    Route::middleware('role:ADMIN,KURIKULUM')->group(function () {
         Route::resource('attendances/timetables', TimetableController::class)
             ->names('attendances.timetables');
     });

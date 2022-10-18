@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class EnsureAuthenticatedUserIsKurikulum
+class CheckRole
 {
     /**
      * Handle an incoming request.
@@ -14,9 +14,9 @@ class EnsureAuthenticatedUserIsKurikulum
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        abort_if(auth()->user()->role !== 'KURIKULUM', 404);
+        abort_if(!in_array(auth()->user()->role, $roles), 404);
 
         return $next($request);
     }

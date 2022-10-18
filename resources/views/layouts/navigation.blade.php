@@ -37,7 +37,7 @@
       </x-nav-link>
     @endif
 
-    @if (auth()->user()->role === 'KURIKULUM')
+    @if (in_array(auth()->user()->role, ['ADMIN', 'KURIKULUM']))
       <x-nav-link href="{{ route('attendances.timetables.index') }}" :active="request()->routeIs('attendances.timetables.index')">
         <x-slot name="icon">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
