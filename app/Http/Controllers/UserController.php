@@ -34,7 +34,7 @@ class UserController extends Controller
         $credentials = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'role' => ['required', 'string', Rule::in(['KURIKULUM', 'KARYAWAN'])],
+            'role' => ['required', 'string', Rule::in(User::ROLE_SELECT)],
         ]);
 
         $password = 'snapan';
@@ -65,7 +65,7 @@ class UserController extends Controller
         $credentials = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
-            'role' => ['required', 'string', Rule::in(['KURIKULUM', 'KARYAWAN'])],
+            'role' => ['required', 'string', Rule::in(User::ROLE_SELECT)],
         ]);
 
         $user->update($credentials);

@@ -27,8 +27,9 @@
             <x-label for="role" :value="__('Role')" />
             <select name="role" id="role"
               class="block mt-1 w-full rounded-md form-select focus:border-indigo-600">
-              <option @selected(old('role', $user->role) === 'KURIKULUM') value="KURIKULUM">Kurikulum</option>
-              <option @selected(old('role', $user->role) === 'KARYAWAN') value="KARYAWAN">Karyawan</option>
+              @foreach (App\Models\User::ROLE_SELECT as $role)
+                <option @selected(old('role', $user->role) === $role) value="{{ $role }}">{{ $role }}</option>
+              @endforeach
             </select>
           </div>
         </div>
