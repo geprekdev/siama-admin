@@ -27,6 +27,12 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:ADMIN')->group(function () {
         Route::resource('users', UserController::class)->except('show');
+
+        Route::resource('attendances/leaves/half-days', Attendance\LeaveHalfDayController::class)
+            ->names('attendances.leaves.half-days');
+
+        Route::resource('attendances/leaves/full-days', Attendance\LeaveFullDayController::class)
+            ->names('attendances.leaves.full-days');
     });
 
     Route::middleware('role:ADMIN,KURIKULUM')->group(function () {

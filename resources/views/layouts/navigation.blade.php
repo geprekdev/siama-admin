@@ -9,7 +9,7 @@
     </div>
   </div>
 
-  <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
+  <nav class="mt-10" x-data="{ isLeaveMenuOpen: {{ str_contains(request()->path(), 'attendances/leaves') ? 'true' : 'false' }} }">
     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
       <x-slot name="icon">
         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -62,7 +62,7 @@
       <x-nav-link href="{{ route('classrooms.timetables.index') }}" :active="request()->routeIs('classrooms.timetables.index')">
         <x-slot name="icon">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z" />
           </svg>
 
@@ -71,25 +71,27 @@
       </x-nav-link>
     @endif
 
-    <x-nav-link href="#" @click="isMultiLevelMenuOpen = !isMultiLevelMenuOpen">
+    <x-nav-link href="#" @click="isLeaveMenuOpen = !isLeaveMenuOpen">
       <x-slot name="icon">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z">
-          </path>
+            d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
+
       </x-slot>
-      Two-level menu
+      Izin
     </x-nav-link>
-    <template x-if="isMultiLevelMenuOpen">
+    <template x-if="isLeaveMenuOpen">
       <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
         x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
         x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
         class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
         aria-label="submenu">
         <li class="px-2 py-1 transition-colors duration-150">
-          <a class="w-full" href="#">Child menu</a>
+          <a class="w-full" href="{{ route('attendances.leaves.half-days.index') }}">Half Day</a>
+        </li>
+        <li class="px-2 py-1 transition-colors duration-150">
+          <a class="w-full" href="{{ route('attendances.leaves.full-days.index') }}">Full Day</a>
         </li>
       </ul>
     </template>
