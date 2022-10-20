@@ -45,4 +45,39 @@ class LeaveFullDayController extends Controller
 
         return view('attendances.leaves.full-days.index', compact('leaves'));
     }
+
+    public function edit($id)
+    {
+        $leave = DB::table('attendances_leave')
+            ->join('auth_user', 'attendances_leave.user_id', '=', 'auth_user.id')
+            ->select('attendances_leave.id', 'auth_user.first_name as name', 'attendances_leave.leave_type', 'attendances_leave.reason', 'attendances_leave.attachment', 'attendances_leave.created_at', 'attendances_leave.approve')
+            ->where('attendances_leave.id', $id)
+            ->first();
+
+        return view('attendances.leaves.full-days.edit', compact('leave'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        DB::table('attendances_leave')
+            ->where('id', $id)
+            ->update($request->validate([
+                'approve' => ['required', 'numeric', 'min:0', 'max:1']
+            ]));
+
+        return redirect()
+            ->route('attendances.leaves.full-days.index')
+            ->with('success', 'Berhasil mengapprove perizinan');
+    }
+
+    public function destroy($id)
+    {
+        DB::table('attendances_leave')
+            ->where('id', $id)
+            ->update(['approve' => null]);
+
+        return redirect()
+            ->route('attendances.leaves.full-days.index')
+            ->with('success', 'Berhasil membatalkan approval perizinan');
+    }
 }

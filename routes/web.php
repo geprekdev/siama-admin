@@ -32,7 +32,8 @@ Route::middleware('auth')->group(function () {
             ->names('attendances.leaves.half-days');
 
         Route::resource('attendances/leaves/full-days', Attendance\LeaveFullDayController::class)
-            ->names('attendances.leaves.full-days');
+            ->names('attendances.leaves.full-days')
+            ->only('index', 'edit', 'update', 'destroy');
     });
 
     Route::middleware('role:ADMIN,KURIKULUM')->group(function () {
