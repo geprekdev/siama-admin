@@ -22,6 +22,11 @@
     </div>
   @endif
 
+  <div class="flex justify-end">
+    <a href="{{ route('classrooms.timetables.create') }}"
+      class="mb-4 py-2 px-4 text-center bg-indigo-600 rounded-md text-white text-sm hover:bg-indigo-500">Tambah</a>
+  </div>
+
   <x-search :route="route('classrooms.timetables.index')" />
 
   <div class="inline-block overflow-hidden min-w-full rounded-lg shadow">
