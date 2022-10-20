@@ -79,7 +79,7 @@
         </svg>
 
       </x-slot>
-      Izin
+      Perizinan
     </x-nav-link>
     <template x-if="isLeaveMenuOpen">
       <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
