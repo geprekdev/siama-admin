@@ -36,8 +36,10 @@ class StudentMonthlyController extends Controller
             'month' => ['required', 'string'],
         ]);
 
+        $grade = DB::table('classrooms_classroom')->where('id', $filter['classroom_id'])->first()->grade;
         $date = explode('-', $filter['month']);
+        $fileDate = Carbon::parse($filter['month'])->locale('id')->isoFormat('MMMM Y');
 
-        return (new StudentMonthlyExport($filter['classroom_id'], $date[1], $date[0]))->download('rekap-kehadiran.xlsx');
+        return (new StudentMonthlyExport($filter['classroom_id'], $date[1], $date[0]))->download("Rekap Kehadiran {$grade} - {$fileDate}.xlsx");
     }
 }

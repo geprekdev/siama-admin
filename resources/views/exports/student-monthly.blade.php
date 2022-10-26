@@ -1,6 +1,10 @@
 <table>
   <thead>
     <tr>
+      <th colspan="4" style="font-weight: 700">Rekap Kehadiran Siswa Kelas {{ $grade }} -
+        {{ $date }}</th>
+    </tr>
+    <tr>
       <th>#</th>
       <th>Nama</th>
       <th>Hadir</th>

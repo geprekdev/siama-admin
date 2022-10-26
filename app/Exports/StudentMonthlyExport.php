@@ -7,25 +7,14 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class StudentMonthlyExport implements FromView, WithHeadings
+class StudentMonthlyExport implements FromView, ShouldAutoSize
 {
     use Exportable;
 
     public function __construct(private int $classroom_id, private int $month, private int $year)
     {
-    }
-
-    public function headings(): array
-    {
-        $grade = DB::table('classrooms_classroom')->where('id', $this->classroom_id)->first()->grade;
-        $date = Carbon::parse($this->year . '-' . $this->month)->locale('id')->isoFormat('MMMM Y');
-
-        return [
-            ["Kelas $grade - $date"],
-            ['#', 'Nama', 'Hadir', 'Terlambat'],
-        ];
     }
 
     public function view(): View
@@ -41,12 +30,15 @@ class StudentMonthlyExport implements FromView, WithHeadings
             ->joinSub($students, 'students', function ($join) {
                 $join->on('students.id', '=', 'attendances_attendance.user_id');
             })
-            ->select('attendances_attendance.id', 'students.name', 'students.grade', 'attendances_attendance.status')
+            ->select('attendances_attendance.id', 'students.nis', 'students.name', 'students.grade', 'attendances_attendance.status')
             ->whereYear('attendances_attendancetimetable.date', '=', $this->year)
             ->whereMonth('attendances_attendancetimetable.date', '=', $this->month)
             ->get()
             ->groupBy(['name', 'status']);
 
-        return view('exports.student-monthly', compact('attendances'));
+        $grade = DB::table('classrooms_classroom')->where('id', $this->classroom_id)->first()->grade;
+        $date = Carbon::parse($this->year . '-' . $this->month)->locale('id')->isoFormat('MMMM Y');
+
+        return view('exports.student-monthly', compact('attendances', 'grade', 'date'));
     }
 }
