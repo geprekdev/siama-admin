@@ -4,6 +4,7 @@ use App\Http\Controllers\Attendance;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Classroom;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Recap\StudentMonthlyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,5 +46,13 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('classrooms/timetables', Classroom\TimetableController::class)
             ->names('classrooms.timetables');
+    });
+
+    Route::middleware('role:ADMIN,BK')->group(function () {
+        Route::get('recaps/students/monthly', [StudentMonthlyController::class, 'index'])
+            ->name('recaps.students.monthly.index');
+
+        Route::get('recaps/students/monthly/export', [StudentMonthlyController::class, 'export'])
+            ->name('recaps.students.monthly.export');
     });
 });
