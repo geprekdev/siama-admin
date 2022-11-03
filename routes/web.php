@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Classroom;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Recap\StudentMonthlyController;
+use App\Http\Controllers\Recap\TeacherMonthlyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,5 +55,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('recaps/students/monthly/export', [StudentMonthlyController::class, 'export'])
             ->name('recaps.students.monthly.export');
+
+        Route::get('recaps/non-students/monthly', [TeacherMonthlyController::class, 'index'])
+            ->name('recaps.non-students.monthly.index');
+
+        Route::get('recaps/non-students/monthly/export', [TeacherMonthlyController::class, 'export'])
+            ->name('recaps.non-students.monthly.export');
     });
 });

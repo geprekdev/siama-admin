@@ -12,6 +12,7 @@
   <nav class="mt-10" x-data="{
       isLeaveMenuOpen: {{ str_contains(request()->path(), 'attendances/leaves') ? 'true' : 'false' }},
       isRecapStudentMenuOpen: {{ request()->is('recaps/students/*') ? 'true' : 'false' }},
+      isRecapNonStudentMenuOpen: {{ request()->is('recaps/non-students/*') ? 'true' : 'false' }},
   }">
     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
       <x-slot name="icon">
@@ -72,57 +73,83 @@
         </x-slot>
         {{ __('Jadwal Pelajaran') }}
       </x-nav-link>
+
+      <x-nav-link href="#" @click="isLeaveMenuOpen = !isLeaveMenuOpen">
+        <x-slot name="icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+
+        </x-slot>
+        Perizinan
+      </x-nav-link>
+      <template x-if="isLeaveMenuOpen">
+        <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
+          x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
+          x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
+          class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
+          aria-label="submenu">
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="{{ route('attendances.leaves.half-days.index') }}">Half Day</a>
+          </li>
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="{{ route('attendances.leaves.full-days.index') }}">Full Day</a>
+          </li>
+        </ul>
+      </template>
+
+      <x-nav-link href="#" @click="isRecapNonStudentMenuOpen = !isRecapNonStudentMenuOpen">
+        <x-slot name="icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7.875 14.25l1.214 1.942a2.25 2.25 0 001.908 1.058h2.006c.776 0 1.497-.4 1.908-1.058l1.214-1.942M2.41 9h4.636a2.25 2.25 0 011.872 1.002l.164.246a2.25 2.25 0 001.872 1.002h2.092a2.25 2.25 0 001.872-1.002l.164-.246A2.25 2.25 0 0116.954 9h4.636M2.41 9a2.25 2.25 0 00-.16.832V12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 12V9.832c0-.287-.055-.57-.16-.832M2.41 9a2.25 2.25 0 01.382-.632l3.285-3.832a2.25 2.25 0 011.708-.786h8.43c.657 0 1.281.287 1.709.786l3.284 3.832c.163.19.291.404.382.632M4.5 20.25h15A2.25 2.25 0 0021.75 18v-2.625c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125V18a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+
+        </x-slot>
+        <small>Rekap Guru/Karyawan</small>
+      </x-nav-link>
+      <template x-if="isRecapNonStudentMenuOpen">
+        <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
+          x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
+          x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
+          class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
+          aria-label="submenu">
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="#">Presensi Harian</a>
+          </li>
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="{{ route('recaps.non-students.monthly.index') }}">Presensi Bulanan</a>
+          </li>
+        </ul>
+      </template>
     @endif
 
-    <x-nav-link href="#" @click="isLeaveMenuOpen = !isLeaveMenuOpen">
-      <x-slot name="icon">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+    @if (in_array(auth()->user()->role, ['ADMIN', 'BK']))
+      <x-nav-link href="#" @click="isRecapStudentMenuOpen = !isRecapStudentMenuOpen">
+        <x-slot name="icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7.875 14.25l1.214 1.942a2.25 2.25 0 001.908 1.058h2.006c.776 0 1.497-.4 1.908-1.058l1.214-1.942M2.41 9h4.636a2.25 2.25 0 011.872 1.002l.164.246a2.25 2.25 0 001.872 1.002h2.092a2.25 2.25 0 001.872-1.002l.164-.246A2.25 2.25 0 0116.954 9h4.636M2.41 9a2.25 2.25 0 00-.16.832V12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 12V9.832c0-.287-.055-.57-.16-.832M2.41 9a2.25 2.25 0 01.382-.632l3.285-3.832a2.25 2.25 0 011.708-.786h8.43c.657 0 1.281.287 1.709.786l3.284 3.832c.163.19.291.404.382.632M4.5 20.25h15A2.25 2.25 0 0021.75 18v-2.625c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125V18a2.25 2.25 0 002.25 2.25z" />
+          </svg>
 
-      </x-slot>
-      Perizinan
-    </x-nav-link>
-    <template x-if="isLeaveMenuOpen">
-      <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
-        x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
-        x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
-        class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-        aria-label="submenu">
-        <li class="px-2 py-1 transition-colors duration-150">
-          <a class="w-full" href="{{ route('attendances.leaves.half-days.index') }}">Half Day</a>
-        </li>
-        <li class="px-2 py-1 transition-colors duration-150">
-          <a class="w-full" href="{{ route('attendances.leaves.full-days.index') }}">Full Day</a>
-        </li>
-      </ul>
-    </template>
-
-    <x-nav-link href="#" @click="isRecapStudentMenuOpen = !isRecapStudentMenuOpen">
-      <x-slot name="icon">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7.875 14.25l1.214 1.942a2.25 2.25 0 001.908 1.058h2.006c.776 0 1.497-.4 1.908-1.058l1.214-1.942M2.41 9h4.636a2.25 2.25 0 011.872 1.002l.164.246a2.25 2.25 0 001.872 1.002h2.092a2.25 2.25 0 001.872-1.002l.164-.246A2.25 2.25 0 0116.954 9h4.636M2.41 9a2.25 2.25 0 00-.16.832V12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 12V9.832c0-.287-.055-.57-.16-.832M2.41 9a2.25 2.25 0 01.382-.632l3.285-3.832a2.25 2.25 0 011.708-.786h8.43c.657 0 1.281.287 1.709.786l3.284 3.832c.163.19.291.404.382.632M4.5 20.25h15A2.25 2.25 0 0021.75 18v-2.625c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125V18a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-
-
-      </x-slot>
-      Rekap Siswa
-    </x-nav-link>
-    <template x-if="isRecapStudentMenuOpen">
-      <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
-        x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
-        x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
-        class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-        aria-label="submenu">
-        <li class="px-2 py-1 transition-colors duration-150">
-          <a class="w-full" href="#">Presensi Harian</a>
-        </li>
-        <li class="px-2 py-1 transition-colors duration-150">
-          <a class="w-full" href="{{ route('recaps.students.monthly.index') }}">Presensi Bulanan</a>
-        </li>
-      </ul>
-    </template>
+        </x-slot>
+        Rekap Siswa
+      </x-nav-link>
+      <template x-if="isRecapStudentMenuOpen">
+        <ul x-transition:enter="transition-all ease-in-out duration-300" x-transition:enter-start="opacity-25 max-h-0"
+          x-transition:enter-end="opacity-100 max-h-xl" x-transition:leave="transition-all ease-in-out duration-300"
+          x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
+          class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
+          aria-label="submenu">
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="#">Presensi Harian</a>
+          </li>
+          <li class="px-2 py-1 transition-colors duration-150">
+            <a class="w-full" href="{{ route('recaps.students.monthly.index') }}">Presensi Bulanan</a>
+          </li>
+        </ul>
+      </template>
+    @endif
   </nav>
 </div>
