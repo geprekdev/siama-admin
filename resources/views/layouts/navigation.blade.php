@@ -91,7 +91,7 @@
           class="p-2 mx-4 mt-2 space-y-2 overflow-hidden text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
           aria-label="submenu">
           <li class="px-2 py-1 transition-colors duration-150">
-            <a class="w-full" href="{{ route('attendances.leaves.half-days.index') }}">Half Day</a>
+            <a class="w-full" href="#">Half Day</a>
           </li>
           <li class="px-2 py-1 transition-colors duration-150">
             <a class="w-full" href="{{ route('attendances.leaves.full-days.index') }}">Full Day</a>
@@ -119,7 +119,8 @@
             <a class="w-full" href="#">Presensi Harian</a>
           </li>
           <li class="px-2 py-1 transition-colors duration-150">
-            <a class="w-full" href="{{ route('recaps.non-students.monthly.index') }}">Presensi Bulanan</a>
+            <a class="w-full" href="{{ route('recaps.non-students.monthly.index') }}">Presensi
+              Bulanan</a>
           </li>
         </ul>
       </template>
