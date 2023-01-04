@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Classroom;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ClassroomTimetableImport;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class TimetableController extends Controller
 {
@@ -32,28 +36,34 @@ class TimetableController extends Controller
 
     public function create()
     {
-        $subjects = DB::table('classrooms_classroomsubject')
-            ->join('classrooms_classroom', 'classrooms_classroomsubject.classroom_id', '=', 'classrooms_classroom.id')
-            ->select('classrooms_classroomsubject.id', 'classrooms_classroomsubject.name', 'classrooms_classroom.grade')
-            ->get();
-
-        return view('classrooms.timetables.create', compact('subjects'));
+        return view('classrooms.timetables.create');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'date' => ['required', 'date'],
-            'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i'],
-            'subject_id' => ['required', 'numeric'],
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:csv,xlsx', 'max:10240'],
         ]);
 
-        DB::table('classrooms_classroomtimetable')->insert($data);
+        $errors = [];
 
-        return redirect()
-            ->route('classrooms.timetables.index')
-            ->with('success', 'Berhasil menambah jadwal');
+        try {
+            Excel::import(new ClassroomTimetableImport, $request->file('file'));
+
+            return redirect()
+                ->route('classrooms.timetables.index')
+                ->with('success', 'Berhasil menambah jadwal');
+        } catch (ValidationException $exception) {
+            foreach ($exception->failures() as $failure) {
+                $f = implode(", ", $failure->errors());
+
+                $errors[] = "Baris ke-{$failure->row()}: tidak dapat menemukan {$f}";
+            }
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return back()->withErrors($errors);
     }
 
     public function edit($id)

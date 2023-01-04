@@ -18,11 +18,7 @@ class Timetable extends Model
         'grade',
     ];
 
-    protected $casts = [
-        'date' => 'date',
-        'start_time' => 'time',
-        'end_time' => 'time',
-    ];
+    public $timestamps = false;
 
     public function subject()
     {
