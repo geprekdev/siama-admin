@@ -22,7 +22,7 @@ class ClassroomTimetableImport implements ToModel, WithStartRow, WithValidation,
     public function model(array $row): Model|null
     {
         $classroom = DB::table('classrooms_classroom')->select('id')->where('grade', $row[3])->first();
-        $teacher = DB::table('auth_user')->select('id')->where('username', $row[4])->first();
+        $teacher = DB::table('auth_user')->select('id')->where('first_name', 'LIKE', $row[4])->first();
         $subject = DB::table('classrooms_classroomsubject')
             ->select('id')
             ->where('name', $row[5])
@@ -57,7 +57,7 @@ class ClassroomTimetableImport implements ToModel, WithStartRow, WithValidation,
                 }
             },
             '4' => function ($attribute, $value, $onFailure) {
-                $teacher = DB::table('auth_user')->select('id')->where('username', $value)->first();
+                $teacher = DB::table('auth_user')->select('id')->where('first_name', 'LIKE', $value)->first();
 
                 if (is_null($teacher)) {
                     $onFailure("username {$value}");
