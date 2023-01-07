@@ -42,13 +42,14 @@ class TimetableController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'date' => ['required', 'date'],
             'file' => ['required', 'file', 'mimes:csv,xlsx', 'max:10240'],
         ]);
 
         $errors = [];
 
         try {
-            Excel::import(new ClassroomTimetableImport, $request->file('file'));
+            Excel::import(new ClassroomTimetableImport($request->date), $request->file('file'));
 
             return redirect()
                 ->route('classrooms.timetables.index')

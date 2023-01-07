@@ -12,6 +12,11 @@
 
         <div class="grid grid-cols-1 gap-6 mt-4">
           <div>
+            <x-label for="date" :value="__('Tanggal')" />
+            <x-input type="date" name="date" id="date" required />
+          </div>
+
+          <div>
             <x-label for="file" :value="__('File untuk di-import')" />
             <x-input type="file" name="file" id="file" required />
           </div>
