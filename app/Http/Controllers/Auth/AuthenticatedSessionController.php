@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -23,14 +26,24 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
+     * @param \App\Http\Requests\Auth\LoginRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $user = User::query()
+            ->where('username', $request->username)
+            ->where('is_superuser', true)
+            ->first();
 
-        $request->session()->regenerate();
+        $hashedPassword = $user->password ?? '';
+
+        if (is_null($user) || !django_password_verify($request->password, $hashedPassword)) {
+            return back()->withErrors(['username' => trans('auth.failed')])
+                ->onlyInput('username');
+        }
+
+        Auth::login($user, $request->boolean('remember'));
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
@@ -38,7 +51,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)

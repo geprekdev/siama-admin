@@ -1,5 +1,5 @@
 @php
-$class = match ($color) {
+$class = match ($color ?? null) {
     'gray' => 'bg-gray-200 text-gray-800',
     'red' => 'bg-red-200 text-red-800',
     'green' => 'bg-green-200 text-green-800',

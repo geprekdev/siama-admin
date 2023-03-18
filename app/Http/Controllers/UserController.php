@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::query();
+        $users = User::with('groups');
 
         $users->when(!empty($request->search), function ($query) use ($request) {
-            $query->where('name', 'LIKE', "%$request->search%")
-                ->orWhere('username', 'LIKE', "%$request->search%")
-                ->orWhere('role', 'LIKE', "%$request->search%");
+            $query->where('first_name', 'LIKE', "%$request->search%")
+                ->orWhere('username', 'LIKE', "%$request->search%");
         });
 
-        $users = $users->latest()->paginate(50);
+        $users = $users->latest('id')->paginate(50);
 
         return view('users.index', compact('users'));
     }
@@ -31,44 +31,71 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $credentials = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+        $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'role' => ['required', 'string', Rule::in(User::ROLE_SELECT)],
+            'groups' => ['required', 'array'],
+            'groups.*' => ['required', 'string', Rule::in(array_keys(User::ROLE_SELECT))]
         ]);
 
         $password = 'snapan';
-        $credentials['password'] = bcrypt($password);
+        $hashedPassword = django_password_hash($password, Str::random(22));
 
-        User::create($credentials);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'username' => $request->username,
+            'password' => $hashedPassword,
+            'is_superuser' => false,
+            'is_staff' => false,
+            'is_active' => true,
+            'last_name' => '',
+            'email' => '',
+            'date_joined' => now(),
+        ]);
+
+        $groupIds = Group::query()
+            ->whereIn('name', $request->groups)
+            ->pluck('id')
+            ->toArray();
+
+        $user->groups()->attach($groupIds);
 
         return redirect()->route('users.index')
             ->with(
                 'success',
                 "Berhasil menambah user! <br />
-                Username: {$credentials['username']} <br />
+                Username: {$request->username} <br />
                 Password: $password"
             );
     }
 
     public function edit(User $user)
     {
-        abort_if($user->role === 'ADMIN', 404);
-
         return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
-        abort_if($user->role === 'ADMIN', 404);
-
-        $credentials = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
-            'role' => ['required', 'string', Rule::in(User::ROLE_SELECT)],
+        $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', Rule::unique('auth_user')->ignore($user)],
+            'groups' => ['required', 'array'],
+            'groups.*' => ['required', 'string', Rule::in(array_keys(User::ROLE_SELECT))]
         ]);
 
-        $user->update($credentials);
+        $user->update([
+            'first_name' => $request->first_name,
+            'username' => $request->username,
+        ]);
+
+        $user->groups()->detach();
+
+        $groupIds = Group::query()
+            ->whereIn('name', $request->groups)
+            ->pluck('id')
+            ->toArray();
+
+        $user->groups()->attach($groupIds);
 
         return redirect()->route('users.index')
             ->with(
@@ -79,8 +106,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        abort_if($user->role === 'ADMIN', 404);
-
+        $user->groups()->detach();
         $user->delete();
 
         return redirect()->route('users.index')
