@@ -22,8 +22,8 @@ class User extends Authenticatable
     ];
 
     const ROLE_COLOR = [
-        'staff' => 'yellow',
-        'student' => 'green',
+        'staff' => 'green',
+        'student' => 'yellow',
         'teacher' => 'indigo',
     ];
 
