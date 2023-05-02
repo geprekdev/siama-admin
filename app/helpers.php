@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 if (!function_exists('django_password_verify')) {
     /**
      * Verify a Django password (PBKDF2-SHA256)
@@ -44,11 +46,12 @@ if (!function_exists("django_password_hash")) {
      * Hash password to Django style (PBKDF2-SHA256)
      *
      * @param string $password  The password provided by the user
-     * @param string $salt      Cryptographically secure random string
      */
-    function django_password_hash(string $password, string $salt): string {
+    function django_password_hash(string $password): string {
         $algo = 'sha256';
         $iterations = 260000;
+        $salt = Str::random(22);
+
         $hash = base64_encode(hash_pbkdf2($algo, $password, $salt, $iterations, 32, true));
 
         return implode('$', [

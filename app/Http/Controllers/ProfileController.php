@@ -16,7 +16,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request)
     {
         if ($request->password) {
-            auth()->user()->update(['password' => django_password_hash($request->password, Str::random(22))]);
+            auth()->user()->update(['password' => django_password_hash($request->password)]);
         }
 
         auth()->user()->update([

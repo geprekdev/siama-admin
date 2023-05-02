@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -14,7 +15,7 @@ class UserController extends Controller
     {
         $users = User::with('groups');
 
-        $users->when(!empty($request->search), function ($query) use ($request) {
+        $users->when(!empty($request->search), function (Builder $query) use ($request) {
             $query->where('first_name', 'LIKE', "%$request->search%")
                 ->orWhere('username', 'LIKE', "%$request->search%");
         });
@@ -39,7 +40,7 @@ class UserController extends Controller
         ]);
 
         $password = 'snapan';
-        $hashedPassword = django_password_hash($password, Str::random(22));
+        $hashedPassword = django_password_hash($password);
 
         $user = User::create([
             'first_name' => $request->first_name,
