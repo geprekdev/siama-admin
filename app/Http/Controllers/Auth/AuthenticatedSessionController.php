@@ -43,7 +43,7 @@ class AuthenticatedSessionController extends Controller
                 ->onlyInput('username');
         }
 
-        Auth::login($user, $request->boolean('remember'));
+        Auth::login($user);
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
