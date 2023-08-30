@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -107,8 +108,11 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        $user->groups()->detach();
-        $user->delete();
+        DB::transaction(function () use ($user) {
+            DB::table('classrooms_classroom_student')->where('user_id', $user->id)->delete();
+            $user->groups()->detach();
+            $user->delete();
+        });
 
         return redirect()->route('users.index')
             ->with(
