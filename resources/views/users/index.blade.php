@@ -22,7 +22,9 @@
         </div>
     @endif
 
-    <div class="flex justify-end">
+    <div class="flex justify-end gap-4">
+        <a href="{{ route('users.import') }}"
+           class="mb-4 py-2 px-4 text-center bg-gray-600 rounded-md text-white text-sm hover:bg-gray-500">Import</a>
         <a href="{{ route('users.create') }}"
            class="mb-4 py-2 px-4 text-center bg-indigo-600 rounded-md text-white text-sm hover:bg-indigo-500">Tambah</a>
     </div>

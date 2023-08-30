@@ -2,7 +2,7 @@
 
 namespace App\Models\Classrooms;
 
-use App\Models\AuthUser;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Classroom extends Model
@@ -16,7 +16,7 @@ class Classroom extends Model
 
     public function homeroomTeacher()
     {
-        return $this->belongsTo(AuthUser::class, 'homeroom_teacher_id');
+        return $this->belongsTo(User::class, 'homeroom_teacher_id');
     }
 
     public function subjects()

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Recap\StudentMonthlyController;
 use App\Http\Controllers\Recap\TeacherMonthlyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserImportController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::resource('users', UserController::class)->except('show');
+    Route::get('users/import', [UserImportController::class, 'create'])->name('users.import');
+    Route::post('users/import', [UserImportController::class, 'store']);
 
     Route::resource('attendances/leaves/half-days', Attendance\LeaveHalfDayController::class)
         ->names('attendances.leaves.half-days');
