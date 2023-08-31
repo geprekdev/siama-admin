@@ -3,6 +3,7 @@
 use App\Http\Controllers\Attendance;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Classroom;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Recap\StudentMonthlyController;
 use App\Http\Controllers\Recap\TeacherMonthlyController;
@@ -31,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->except('show');
     Route::get('users/import', [UserImportController::class, 'create'])->name('users.import');
     Route::post('users/import', [UserImportController::class, 'store']);
+
+    Route::resource('classrooms', ClassroomController::class)->except('show');
 
     Route::resource('attendances/leaves/half-days', Attendance\LeaveHalfDayController::class)
         ->names('attendances.leaves.half-days');
