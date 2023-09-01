@@ -35,6 +35,15 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div>
+                        <x-label for="student_list" :value="__('Murid')"/>
+                        <ul id="student_list" class="flex flex-col gap-3 ml-6 mt-2 list-decimal">
+                            @foreach($students as $student)
+                                <li>{{ $student->first_name }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="flex justify-end mt-6">

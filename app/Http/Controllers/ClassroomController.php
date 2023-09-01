@@ -72,6 +72,13 @@ class ClassroomController extends Controller
 
         abort_if(is_null($classroom), 404);
 
+        $students = DB::table('classrooms_classroom_student')
+            ->select('auth_user.id', 'auth_user.first_name')
+            ->join('auth_user', 'classrooms_classroom_student.user_id', '=', 'auth_user.id')
+            ->where('classrooms_classroom_student.classroom_id', $classroom->id)
+            ->orderBy('auth_user.first_name')
+            ->get();
+
         $teachers = DB::table('auth_user_groups')
             ->join('auth_user', 'auth_user_groups.user_id', '=', 'auth_user.id')
             ->join('auth_group', 'auth_user_groups.group_id', '=', 'auth_group.id')
@@ -81,7 +88,7 @@ class ClassroomController extends Controller
             ->get();
 
         return view('classrooms.classrooms.edit')
-            ->with(['classroom' => $classroom, 'teachers' => $teachers]);
+            ->with(['classroom' => $classroom, 'students' => $students, 'teachers' => $teachers]);
     }
 
     public function update(Request $request, int $id): RedirectResponse
